@@ -1,4 +1,4 @@
-import { Response } from "express";
+import type { Response } from "express";
 
 // Define the shape of the data object
 interface ResponseData<T = any> {

@@ -18,6 +18,19 @@ dotenv.config();
 
 //* make express app
 const app: Application = express();
+//* ====================
+// Built-in Middleware
+//* ====================
+
+//* Parse incoming JSON payloads
+app.use(express.json());
+
+//* Parse URL-encoded data (from HTML forms)
+app.use(express.urlencoded({ extended: true }));
+
+//* Serve static files from 'public' folder
+app.use(express.static("public"));
+
 
 //* ====================
 // Security & Performance
@@ -67,19 +80,6 @@ app.use(
 //* Combined format logs method, url, status, response time
 app.use(morgan("combined"));
 
-
-//* ====================
-// Built-in Middleware
-//* ====================
-
-//* Parse incoming JSON payloads
-app.use(express.json());
-
-//* Parse URL-encoded data (from HTML forms)
-app.use(express.urlencoded({ extended: true }));
-
-//* Serve static files from 'public' folder
-app.use(express.static("public"));
 
 
 // Global API limiter (all routes starting with /api)
