@@ -24,7 +24,18 @@ export const createPost = async (req: Request, res: Response, next: NextFunction
 
 export const getAllPosts = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const result = await postService.findAll();
+        const { search } = req.query;
+        const tags = req.query.tags ? (req.query.tags as string).split(",") : [];
+        const searchString = typeof search === 'string' ? search : undefined
+        const isFeatured = req.query.isFeatured
+            ? req.query.isFeatured === 'true'
+                ? true
+                : req.query.isFeatured === 'false'
+                    ? false
+                    : undefined
+            : undefined;
+
+        const result = await postService.findAll({ search: searchString, tags, isFeatured });
         sendResponse(res, {
             statusCode: HttpStatus.OK,
             success: true,

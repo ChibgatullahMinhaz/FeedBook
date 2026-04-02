@@ -8,16 +8,22 @@ import helmet from "helmet";
 import compression from "compression";
 import rateLimit from "express-rate-limit";
 import router from "./Routes";
-import authRoutes from "./Routes/auth.routes";
 import notFound from "./middlewares/notFound";
 import globalErrorHandler from "./middlewares/globalErrorHandler";
 import chalk from "chalk";
+import { toNodeHandler } from "better-auth/node";
+import { auth } from "./lib/auth";
 
 //* init dotenv config
 dotenv.config();
 
 //* make express app
 const app: Application = express();
+
+//* better auth route 
+// app.all("/api/auth/*", toNodeHandler(auth)); // For Express v4
+app.all("/api/auth/*splat", toNodeHandler(auth));
+
 //* ====================
 // Built-in Middleware
 //* ====================
@@ -100,11 +106,9 @@ const authLimiter = rateLimit({
     windowMs: 15 * 60 * 1000,
     max: 5,
     message: {
-        message: "Too many login attempts. Try again after 15 minutes.",
+        message: "Too many  login attempts. Try again after 15 minutes.",
     },
 });
-
-app.use("/api/auth", authLimiter, authRoutes);
 
 
 //* ====================
