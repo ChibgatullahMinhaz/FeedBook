@@ -13,10 +13,12 @@ import globalErrorHandler from "./middlewares/globalErrorHandler";
 import chalk from "chalk";
 import { toNodeHandler } from "better-auth/node";
 import { auth } from "./lib/auth";
+import { seedAdmin } from "./script/seedAdmin";
 
 //* init dotenv config
 dotenv.config();
 
+seedAdmin()
 //* make express app
 const app: Application = express();
 

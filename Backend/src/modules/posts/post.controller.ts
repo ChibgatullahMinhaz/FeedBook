@@ -3,6 +3,8 @@ import sendResponse from "../../lib/utils/sendResponse";
 import HttpStatus from "http-status";
 import AppError from "../../error/AppError";
 import * as postService from "./post.service";
+import paginationsAndSortingHelper from "../../helpers/paginationsAndSortingHelper";
+import type { PostStatus } from "../../../generated/prisma/client";
 
 export const createPost = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -35,7 +37,13 @@ export const getAllPosts = async (req: Request, res: Response, next: NextFunctio
                     : undefined
             : undefined;
 
-        const result = await postService.findAll({ search: searchString, tags, isFeatured });
+        const status = req.query.status as PostStatus | undefined
+        const authorId = req.query.authorId as string | undefined
+
+        const { page, limit, skip, sortBy, sortOrder } = paginationsAndSortingHelper(req.query)
+
+
+        const result = await postService.findAll({ search: searchString, tags, isFeatured, status, authorId, page, limit, skip, sortBy, sortOrder });
         sendResponse(res, {
             statusCode: HttpStatus.OK,
             success: true,

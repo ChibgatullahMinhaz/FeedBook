@@ -44,6 +44,11 @@ const config = {
   emailPort: parseInt(process.env.EMAIL_PORT || "587", 10),
   emailUser: process.env.EMAIL_USER,
   emailPass: process.env.EMAIL_PASS,
+  //* seed admin
+  adminEmail: process.env.ADMIN_EMAIL,
+  adminPassword: process.env.ADMIN_PASSWORD,
+  displayName: process.env.ADMIN_NAME,
+
 };
 
 export default config;
