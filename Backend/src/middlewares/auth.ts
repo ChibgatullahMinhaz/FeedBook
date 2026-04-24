@@ -2,13 +2,15 @@ import type { NextFunction, Request, Response } from "express"
 import { auth as betterAuth } from "../lib/auth";
 import httpStatus from "http-status";
 import sendResponse from "../lib/utils/sendResponse";
+import type { USER_ROLE } from "../lib/enums/userRole";
 
 interface AuthRequest extends Request {
     user?: any;
     session?: any;
 }
 
-const authMiddleware = (...roles: any) => {
+
+const authMiddleware = (...roles: USER_ROLE[]) => {
     return async (req: AuthRequest, res: Response, next: NextFunction) => {
         try {
             const session = await betterAuth.api.getSession({

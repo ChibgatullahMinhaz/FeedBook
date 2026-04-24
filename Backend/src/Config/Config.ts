@@ -38,7 +38,7 @@ const config = {
   //* better auth config
   bauthsecret: process.env.BETTER_AUTH_SECRET,
   bauthurl: process.env.BETTER_AUTH_URL,
-  appUrl: process.env.APP_URL || "http://localhost:3000",
+  appUrl: process.env.APP_URL,
   //* email config
   emailHost: process.env.EMAIL_HOST,
   emailPort: parseInt(process.env.EMAIL_PORT || "587", 10),

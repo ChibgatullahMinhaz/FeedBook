@@ -13,12 +13,11 @@ import globalErrorHandler from "./middlewares/globalErrorHandler";
 import chalk from "chalk";
 import { toNodeHandler } from "better-auth/node";
 import { auth } from "./lib/auth";
-import { seedAdmin } from "./script/seedAdmin";
+import { clientOrigin } from "./constants/origin";
 
 //* init dotenv config
 dotenv.config();
 
-seedAdmin()
 //* make express app
 const app: Application = express();
 
@@ -49,8 +48,7 @@ app.use(compression());
 
 app.use(
     cors({
-        // origin: ["http://localhost:5173", "https://ms-live-app.web.app", "https://ms-agency-portal.web.app"],
-        origin: '*',
+        origin: clientOrigin,
         methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
         allowedHeaders: ["Content-Type", "Authorization"],
         credentials: true,
@@ -102,15 +100,6 @@ const globalApiLimiter = rateLimit({
 });
 
 app.use("/api", globalApiLimiter, router);
-
-// Stricter limiter for login/signup routes
-const authLimiter = rateLimit({
-    windowMs: 15 * 60 * 1000,
-    max: 5,
-    message: {
-        message: "Too many  login attempts. Try again after 15 minutes.",
-    },
-});
 
 
 //* ====================

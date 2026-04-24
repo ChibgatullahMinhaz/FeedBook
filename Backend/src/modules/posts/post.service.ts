@@ -1,4 +1,4 @@
-import type { Post, PostStatus } from "../../../generated/prisma/client";
+import { CommentStatus, type Post, type PostStatus } from "../../../generated/prisma/client";
 import type { PostWhereInput } from "../../../generated/prisma/models";
 import { prisma } from "../../lib/prisma";
 
@@ -93,6 +93,7 @@ export const findAll = async ({
         orderBy: {
             [sortBy]: sortOrder
         },
+
         select: {
             id: true,
             title: true,
@@ -100,9 +101,64 @@ export const findAll = async ({
             isFeatured: true,
             tags: true,
             views: true,
-            createdAt: true
+            createdAt: true,
+            _count: {
+                select: { comments: true }
+            }
         },
+
 
     });
     return posts;
+}
+
+
+export const findPostById = async (postId: string) => {
+    return prisma.$transaction(async (tx) => {
+        await tx.post.update({
+            where: {
+                id: postId
+            },
+            data: {
+                views: {
+                    increment: 1
+                }
+            }
+        })
+
+        const postData = await tx.post.findUnique({
+            where: {
+                id: postId
+            },
+            include: {
+                comments: {
+                    where: {
+                        parentId: null,
+                        status: CommentStatus.APPROVED
+                    },
+                    orderBy: { createdAt: "desc" },
+                    include: {
+                        replies: {
+                            where: {
+                                status: CommentStatus.APPROVED
+                            },
+                            orderBy: { createdAt: "asc" },
+                            include: {
+                                replies: {
+                                    where: {
+                                        status: CommentStatus.APPROVED
+                                    },
+                                    orderBy: { createdAt: "asc" }
+                                }
+                            }
+                        }
+                    }
+                },
+                _count: {
+                    select: { comments: true }
+                }
+            }
+        })
+        return postData
+    })
 }

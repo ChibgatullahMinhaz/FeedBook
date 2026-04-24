@@ -54,3 +54,16 @@ export const getAllPosts = async (req: Request, res: Response, next: NextFunctio
         next(error);
     }
 }
+
+export const getPostById = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { postId } = req.params;
+        if (!postId) {
+            throw new Error("Post Id is required!")
+        }
+        const result = await postService.findPostById(postId as string);
+        res.status(200).json(result)
+    } catch (e) {
+        next(e)
+    }
+}

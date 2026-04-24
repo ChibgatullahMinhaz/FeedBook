@@ -2,6 +2,8 @@ import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { prisma } from "./prisma";
 import { USER_ROLE } from "./enums/userRole";
+import config from "../Config/Config";
+import { clientOrigin } from "../constants/origin";
 
 export const auth = betterAuth({
     database: prismaAdapter(prisma, {
@@ -12,6 +14,8 @@ export const auth = betterAuth({
         autoSignIn: false,
         requireEmailVerification: true,
     },
+    baseURL: config.bauthurl,
+    trustedOrigins:clientOrigin,
     emailVerification: {
         sendVerificationEmail: async ({ user, url, token }, request) => {
             console.log('sending email !')
